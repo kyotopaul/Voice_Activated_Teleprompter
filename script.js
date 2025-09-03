@@ -1,15 +1,39 @@
 // script.js
 document.addEventListener('DOMContentLoaded', function() {
+    // Initialize particles.js
+    particlesJS('particles', {
+        particles: {
+            number: { value: 80, density: { enable: true, value_area: 800 } },
+            color: { value: "#ffffff" },
+            shape: { type: "circle" },
+            opacity: { value: 0.2, random: true },
+            size: { value: 3, random: true },
+            line_linked: { enable: true, distance: 150, color: "#ffffff", opacity: 0.1, width: 1 },
+            move: { enable: true, speed: 2, direction: "none", random: true, straight: false, out_mode: "out" }
+        },
+        interactivity: {
+            detect_on: "canvas",
+            events: { onhover: { enable: true, mode: "repulse" }, onclick: { enable: true, mode: "push" } }
+        }
+    });
+
     const startBtn = document.getElementById('startBtn');
     const clearBtn = document.getElementById('clearBtn');
     const output = document.getElementById('output');
     const statusIndicator = document.getElementById('statusIndicator');
     const statusText = document.getElementById('statusText');
     const languageSelect = document.getElementById('language');
+    const wordCountEl = document.getElementById('wordCount');
+    const charCountEl = document.getElementById('charCount');
+    const languageStatEl = document.getElementById('languageStat');
+    const visualizer = document.getElementById('visualizer');
     
     let recognition = null;
     let isListening = false;
     let finalTranscript = '';
+    
+    // Create audio visualizer bars
+    createVisualizer();
     
     // Check if the browser supports the Web Speech API
     if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
@@ -21,8 +45,9 @@ document.addEventListener('DOMContentLoaded', function() {
             isListening = true;
             statusIndicator.classList.add('active');
             statusText.textContent = 'Listening...';
-            startBtn.textContent = 'Stop Listening';
+            startBtn.innerHTML = '<i class="fas fa-stop"></i> Stop Listening';
             output.classList.add('pulse');
+            animateVisualizer(true);
         };
         
         recognition.onresult = function(event) {
@@ -37,8 +62,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
             
+            // Update stats
+            updateStats();
+            
             // Display both interim and final results
-            output.innerHTML = `<p>${finalTranscript}</p>`;
+            if (finalTranscript) {
+                output.innerHTML = `<p>${finalTranscript}</p>`;
+            }
+            
             if (interimTranscript) {
                 output.innerHTML += `<p style="opacity:0.7;font-style:italic;">${interimTranscript}</p>`;
             }
@@ -67,7 +98,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Browser doesn't support speech recognition
         startBtn.disabled = true;
         statusText.textContent = 'Speech recognition not supported';
-        output.innerHTML = '<p>Your browser does not support speech recognition. Please try Chrome or Edge.</p>';
+        output.innerHTML = '<div class="placeholder"><i class="fas fa-exclamation-triangle"></i><p>Your browser does not support speech recognition. Please try Chrome or Edge.</p></div>';
     }
     
     startBtn.addEventListener('click', function() {
@@ -80,7 +111,16 @@ document.addEventListener('DOMContentLoaded', function() {
     
     clearBtn.addEventListener('click', function() {
         finalTranscript = '';
-        output.innerHTML = '<p>Your recognized speech will appear here...</p>';
+        output.innerHTML = '<div class="placeholder"><i class="fas fa-comment-dots"></i><p>Your recognized speech will appear here...</p></div>';
+        updateStats();
+    });
+    
+    languageSelect.addEventListener('change', function() {
+        languageStatEl.textContent = this.value;
+        if (isListening) {
+            stopListening();
+            setTimeout(startListening, 300);
+        }
     });
     
     function startListening() {
@@ -110,8 +150,50 @@ document.addEventListener('DOMContentLoaded', function() {
             isListening = false;
             statusIndicator.classList.remove('active');
             statusText.textContent = 'Ready to listen';
-            startBtn.textContent = 'Start Listening';
+            startBtn.innerHTML = '<i class="fas fa-play"></i> Start Listening';
             output.classList.remove('pulse');
+            animateVisualizer(false);
+        }
+    }
+    
+    function updateStats() {
+        const wordCount = finalTranscript.trim() ? finalTranscript.trim().split(/\s+/).length : 0;
+        const charCount = finalTranscript.length;
+        
+        wordCountEl.textContent = wordCount;
+        charCountEl.textContent = charCount;
+    }
+    
+    function createVisualizer() {
+        for (let i = 0; i < 30; i++) {
+            const bar = document.createElement('div');
+            bar.style.height = `${Math.random() * 60 + 20}px`;
+            bar.style.width = '3px';
+            bar.style.background = 'linear-gradient(to top, var(--secondary), var(--accent))';
+            bar.style.position = 'absolute';
+            bar.style.bottom = '0';
+            bar.style.left = `${i * 10}px`;
+            bar.style.borderRadius = '2px';
+            bar.style.transformOrigin = 'bottom';
+            bar.classList.add('visualizer-bar');
+            visualizer.appendChild(bar);
+        }
+    }
+    
+    function animateVisualizer(animate) {
+        const bars = document.querySelectorAll('.visualizer-bar');
+        
+        if (animate) {
+            bars.forEach(bar => {
+                bar.style.animation = `none`;
+                void bar.offsetWidth; // Trigger reflow
+                bar.style.animation = `visualize ${Math.random() * 0.5 + 0.3}s infinite ease-in-out alternate`;
+            });
+        } else {
+            bars.forEach(bar => {
+                bar.style.animation = 'none';
+                bar.style.height = '20px';
+            });
         }
     }
     
@@ -127,32 +209,17 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
     
-    // Add visual feedback for speech activity
-    let visualFeedback = document.createElement('div');
-    visualFeedback.style.position = 'fixed';
-    visualFeedback.style.bottom = '20px';
-    visualFeedback.style.right = '20px';
-    visualFeedback.style.width = '50px';
-    visualFeedback.style.height = '50px';
-    visualFeedback.style.borderRadius = '50%';
-    visualFeedback.style.background = 'rgba(255, 255, 255, 0.2)';
-    visualFeedback.style.display = 'flex';
-    visualFeedback.style.justifyContent = 'center';
-    visualFeedback.style.alignItems = 'center';
-    visualFeedback.style.color = 'white';
-    visualFeedback.style.fontSize = '20px';
-    visualFeedback.style.opacity = '0';
-    visualFeedback.style.transition = 'opacity 0.3s';
-    visualFeedback.innerHTML = '🎤';
-    document.body.appendChild(visualFeedback);
-    
-    // Simulate visual feedback for demonstration
-    setInterval(() => {
-        if (isListening) {
-            visualFeedback.style.opacity = '1';
-            visualFeedback.style.transform = `scale(${1 + Math.random() * 0.5})`;
-        } else {
-            visualFeedback.style.opacity = '0';
+    // Add CSS for visualizer animation
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes visualize {
+            from { height: 20px; }
+            to { height: 80px; }
         }
-    }, 300);
+        
+        .visualizer-bar {
+            transition: height 0.3s ease;
+        }
+    `;
+    document.head.appendChild(style);
 });

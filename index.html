@@ -3,39 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Voice-Activated Teleprompter</title>
+    <title>Godlike Voice Teleprompter</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <div class="particles-container" id="particles"></div>
+    
     <div class="container">
         <header>
-            <h1>Voice-Activated Teleprompter</h1>
-            <p class="subtitle">Real-time voice recognition with multi-language support</p>
+            <div class="logo">
+                <i class="fas fa-microphone-alt"></i>
+                <h1>Voice<span>Prompter</span>Pro</h1>
+            </div>
+            <p class="subtitle">Next-generation voice recognition with multi-language support</p>
             <div class="language-badges">
-                <div class="badge">English</div>
-                <div class="badge">Swahili</div>
-                <div class="badge">Sheng</div>
+                <div class="badge"><i class="fas fa-language"></i> English</div>
+                <div class="badge"><i class="fas fa-language"></i> Swahili</div>
+                <div class="badge"><i class="fas fa-language"></i> Sheng</div>
             </div>
         </header>
         
         <div class="controls">
             <div class="control-group">
-                <div class="control-label">Select Language</div>
+                <div class="control-label"><i class="fas fa-globe"></i> Select Language</div>
                 <select id="language">
-                    <option value="en-US">English</option>
+                    <option value="en-US">English (United States)</option>
+                    <option value="en-GB">English (United Kingdom)</option>
                     <option value="sw-KE">Swahili (Kenya)</option>
                     <option value="sheng">Sheng (Experimental)</option>
                 </select>
             </div>
             
             <div class="control-group">
-                <div class="control-label">Voice Controls</div>
-                <button id="startBtn">Start Listening</button>
+                <div class="control-label"><i class="fas fa-microphone"></i> Voice Controls</div>
+                <button id="startBtn" class="primary-btn">
+                    <i class="fas fa-play"></i> Start Listening
+                </button>
             </div>
             
             <div class="control-group">
-                <div class="control-label">Clear Text</div>
-                <button id="clearBtn">Clear All Text</button>
+                <div class="control-label"><i class="fas fa-broom"></i> Clear Text</div>
+                <button id="clearBtn" class="secondary-btn">
+                    <i class="fas fa-trash-alt"></i> Clear All Text
+                </button>
             </div>
             
             <div class="status">
@@ -45,21 +56,43 @@
         </div>
         
         <div class="teleprompter-display" id="output">
-            <p>Your recognized speech will appear here...</p>
-            <p>Try saying: <span class="highlight">"Hello, welcome to the voice activated teleprompter"</span></p>
+            <div class="placeholder">
+                <i class="fas fa-comment-dots"></i>
+                <p>Your recognized speech will appear here...</p>
+                <p class="hint">Try saying: <span class="highlight">"Hello, welcome to the voice activated teleprompter"</span></p>
+            </div>
+        </div>
+        
+        <div class="stats">
+            <div class="stat">
+                <div class="stat-value" id="wordCount">0</div>
+                <div class="stat-label">Words</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value" id="charCount">0</div>
+                <div class="stat-label">Characters</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value" id="languageStat">en-US</div>
+                <div class="stat-label">Language</div>
+            </div>
         </div>
         
         <div class="instructions">
-            <p>Click "Start Listening" and begin speaking. The text will appear in real-time.</p>
-            <p>Switch between languages using the dropdown menu. For Sheng, we use English recognition with custom word mapping.</p>
-            
-            <div class="note">
-                <strong>Note:</strong> Speech recognition works best in Chrome and Edge browsers. 
-                Make sure you have a working microphone and allow microphone access when prompted.
+            <div class="instruction">
+                <i class="fas fa-keyboard"></i>
+                <p>Press <span class="key">Space</span> to start/stop listening</p>
+            </div>
+            <div class="instruction">
+                <i class="fas fa-lightbulb"></i>
+                <p>Works best in Chrome/Edge with microphone access</p>
             </div>
         </div>
     </div>
 
+    <div class="visualizer" id="visualizer"></div>
+
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
