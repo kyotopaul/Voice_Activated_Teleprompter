@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voice-Activated Teleprompter</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Voice-Activated Teleprompter</h1>
+            <p class="subtitle">Real-time voice recognition with multi-language support</p>
+            <div class="language-badges">
+                <div class="badge">English</div>
+                <div class="badge">Swahili</div>
+                <div class="badge">Sheng</div>
+            </div>
+        </header>
+        
+        <div class="controls">
+            <div class="control-group">
+                <div class="control-label">Select Language</div>
+                <select id="language">
+                    <option value="en-US">English</option>
+                    <option value="sw-KE">Swahili (Kenya)</option>
+                    <option value="sheng">Sheng (Experimental)</option>
+                </select>
+            </div>
+            
+            <div class="control-group">
+                <div class="control-label">Voice Controls</div>
+                <button id="startBtn">Start Listening</button>
+            </div>
+            
+            <div class="control-group">
+                <div class="control-label">Clear Text</div>
+                <button id="clearBtn">Clear All Text</button>
+            </div>
+            
+            <div class="status">
+                <div class="status-indicator" id="statusIndicator"></div>
+                <span id="statusText">Ready to listen</span>
+            </div>
+        </div>
+        
+        <div class="teleprompter-display" id="output">
+            <p>Your recognized speech will appear here...</p>
+            <p>Try saying: <span class="highlight">"Hello, welcome to the voice activated teleprompter"</span></p>
+        </div>
+        
+        <div class="instructions">
+            <p>Click "Start Listening" and begin speaking. The text will appear in real-time.</p>
+            <p>Switch between languages using the dropdown menu. For Sheng, we use English recognition with custom word mapping.</p>
+            
+            <div class="note">
+                <strong>Note:</strong> Speech recognition works best in Chrome and Edge browsers. 
+                Make sure you have a working microphone and allow microphone access when prompted.
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
